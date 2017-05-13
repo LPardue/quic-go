@@ -167,36 +167,6 @@ var _ = Describe("Session", func() {
 		Eventually(areSessionsRunning).Should(BeFalse())
 	})
 
-	Context("source address", func() {
-		It("uses the IP address if given an UDP connection", func() {
-			conn := &conn{currentAddr: &net.UDPAddr{IP: net.IPv4(192, 168, 100, 200)[12:], Port: 1337}}
-			sess, _, err := newSession(
-				conn,
-				protocol.VersionWhatever,
-				0,
-				scfg,
-				populateServerConfig(&Config{}),
-			)
-			Expect(err).ToNot(HaveOccurred())
-			Expect(*(*[]byte)(unsafe.Pointer(reflect.ValueOf(sess.(*session).cryptoSetup).Elem().FieldByName("sourceAddr").UnsafeAddr()))).To(Equal([]byte{192, 168, 100, 200}))
-		})
-
-		It("uses the string representation of the remote addresses if not given a UDP connection", func() {
-			conn := &conn{
-				currentAddr: &net.TCPAddr{IP: net.IPv4(192, 168, 100, 200)[12:], Port: 1337},
-			}
-			sess, _, err := newSession(
-				conn,
-				protocol.VersionWhatever,
-				0,
-				scfg,
-				populateServerConfig(&Config{}),
-			)
-			Expect(err).ToNot(HaveOccurred())
-			Expect(*(*[]byte)(unsafe.Pointer(reflect.ValueOf(sess.(*session).cryptoSetup).Elem().FieldByName("sourceAddr").UnsafeAddr()))).To(Equal([]byte("192.168.100.200:1337")))
-		})
-	})
-
 	Context("when handling stream frames", func() {
 		It("makes new streams", func() {
 			sess.handleStreamFrame(&frames.StreamFrame{
