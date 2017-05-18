@@ -78,6 +78,9 @@ func init() {
 }
 
 var _ = BeforeEach(func() {
+	// set custom time format for logs
+	utils.SetLogTimeFormat("15:04:05.000")
+
 	// create a new uploadDir for every test
 	var err error
 	uploadDir, err = ioutil.TempDir("", "quic-upload-dest")

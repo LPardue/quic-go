@@ -12,16 +12,20 @@ import (
 var _ = Describe("Log", func() {
 	var (
 		b *bytes.Buffer
+
+		initialTimeFormat string
 	)
 
 	BeforeEach(func() {
 		b = bytes.NewBuffer([]byte{})
-		out = b
+		SetLogWriter(b)
+		initialTimeFormat = timeFormat
 	})
 
 	AfterEach(func() {
-		out = os.Stdout
+		SetLogWriter(os.Stdout)
 		SetLogLevel(LogLevelNothing)
+		timeFormat = initialTimeFormat
 	})
 
 	It("log level nothing", func() {
